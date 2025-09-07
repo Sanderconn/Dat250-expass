@@ -55,10 +55,7 @@ public class VoteController {
 
     @PutMapping("/{voteId}")
     public ResponseEntity<Vote> update(@PathVariable long pollId, @PathVariable long voteId, @RequestBody UpdateVoteBody body) {
-
         Vote vote = pm.getVote(voteId);
-        if (vote == null) return ResponseEntity.notFound().build();
-
         vote.setOptionId(body.newOptionId);
         vote.setPollId(pollId);
         vote.setPublishedAt(Instant.now());

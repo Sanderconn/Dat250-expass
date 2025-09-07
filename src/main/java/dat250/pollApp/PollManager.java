@@ -65,7 +65,7 @@ public class PollManager {
 
     public void removePoll(Long id) {
         polls.remove(id);
-       
+        votes.values().removeIf(v -> v.getPollId().equals(id));
     }
 
     // votes
