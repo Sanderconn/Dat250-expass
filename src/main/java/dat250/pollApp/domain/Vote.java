@@ -8,7 +8,7 @@ public class Vote {
     private Long id; 
     private Long userId; 
     private Long optionId;
-    private Long createdByUserId;
+    private Long pollId;
 
     public Vote(){}
 
@@ -36,10 +36,10 @@ public class Vote {
     public void setOptionId(Long optionId) {
         this.optionId = optionId;
     }
-    public Long getCreatedByUserId() {
-        return createdByUserId;
+    public Long getPollId() {
+        return pollId;
     }
-    public void setCreatedByUserId(Long createdByUserId) {
-        this.createdByUserId = createdByUserId;
+    public void setPollId(Long pollId) {
+        this.pollId = pollId;
     }
 }

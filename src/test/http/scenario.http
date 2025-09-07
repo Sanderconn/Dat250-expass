@@ -1,0 +1,82 @@
+# PollApp Test Scenario
+# Run your Spring Boot app first (default: http://localhost:8080)
+
+###
+# Create a new user
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "abc",
+  "email": "abc@example.com"
+}
+
+###
+# List all users, should show 1 user
+GET http://localhost:8080/api/users
+
+###
+# Create another user 
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "username": "123",
+  "email": "123@example.com"
+}
+
+###
+# List all users again, should show 2 users
+GET http://localhost:8080/api/users
+
+###
+# User 1 creates a new poll
+POST http://localhost:8080/api/polls
+Content-Type: application/json
+
+{
+  "creatorId": 1,
+  "question": "What is your favorite number in the alphabet?",
+  "publishedAt": "2025-09-04T00:00:00Z",
+  "validUntil": "2025-09-10T00:00:00Z",
+  "voteOptions": [
+    { "caption": "Blue",  "presentationOrder": 1 },
+    { "caption": "Green", "presentationOrder": 2 },
+    { "caption": "Red", "presentationOrder": 3 }
+  ]
+}
+
+###
+# List polls, should show the new poll
+GET http://localhost:8080/api/polls
+
+###
+# User 2 votes on the poll
+POST http://localhost:8080/api/polls/1/votes
+Content-Type: application/json
+
+{
+  "userId": 2,
+  "optionId": 1
+}
+
+###
+# User 2 changes his vote
+PUT http://localhost:8080/api/polls/1/votes/1
+Content-Type: application/json
+
+{
+  "newOptionId": 2
+}
+
+###
+# List votes
+GET http://localhost:8080/api/polls/1/votes
+
+###
+# Delete the poll
+DELETE http://localhost:8080/api/polls/1
+
+###
+# List votes again, should be empty or not found
+GET http://localhost:8080/api/polls/1/votes

@@ -4,8 +4,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-import dat250.pollApp.domain.VoteOption;
-
 public class Poll {
 
     private String question;
