@@ -55,7 +55,8 @@ public class PollController {
 
     // Delete poll
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        pm.removePoll(id);
-    }
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        pm.removePoll(id); 
+        return ResponseEntity.noContent().build(); 
+}
 }
