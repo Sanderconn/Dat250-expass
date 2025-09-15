@@ -13,4 +13,4 @@ After that I integrated the frontend with the backend. When the functionality wa
 The main challenge was getting up to speed with Svelte. I hadn’t used Svelte before, so a lot of time went into learning the basics and fixing small issues along the way.
 
 ### Link to repo
-https://github.com/Sanderconn/Dat250-expass/tree/main
+https://github.com/Sanderconn/Dat250-expass
