@@ -47,30 +47,78 @@
     }
   }
 
-  function back(){ phase='pick'; selectedPollId=''; }
+  function back(){ phase='pick'; selectedPollId=''; status = '';}
 </script>
 
-<div style="text-align:center; margin-bottom:1rem;">
 {#if phase === 'pick'}
-  <h2>Select a poll</h2>
-  {#if status}<p>{status}</p>{/if}
-    {#each polls as p (p.id)}
-      <li>{p.question} <button on:click={() => choose(p.id)}>choose</button></li>
-    {/each}
+    <div class = "card box">
+        <h2>Select a poll</h2>
+        <div class = "list">
+            {#each polls as p (p.id)}
+                <button class = "btn" on:click={() => choose(p.id)}>{p.question}</button>
+            {/each}
+        </div>
+        {#if status}<p class = "status">{status}</p>{/if}
+    </div>
 {/if}
 
 {#if phase === 'vote'}
-  <h2>{selectedPoll.question}</h2>
-  {#if status}<p>{status}</p>{/if}
-    {#each (selectedPoll.voteOptions ?? []) as opt (opt.id ?? opt.optionId)}
-      <li>
-        {opt.caption}
-        <button on:click={() => submitVote(opt.id ?? opt.optionId)}>vote!</button>
-        {#if opt.votes != null}
-          <span> — {opt.votes} {opt.votes === 1 ? 'vote' : 'votes'}</span>
-        {/if}
-      </li>
+    <div class = "card box">
+        <h2>{selectedPoll.question}</h2>
+        {#each (selectedPoll.voteOptions ?? []) as opt (opt.id ?? opt.optionId)}
+        <div class = "options">
+            {opt.caption}
+            <button class = "btn save" on:click={() => submitVote(opt.id ?? opt.optionId)}>vote!</button>
+            {#if opt.votes != null}
+            <span> — {opt.votes} {opt.votes === 1 ? 'vote' : 'votes'}</span>
+            {/if}
+        </div>
     {/each}
-  <button on:click={back}>Go Back</button>
+    <button class = "btn" on:click={back}>Go Back</button>
+    </div>
+    {#if status}<p class = "status">{status}</p>{/if}
 {/if}
-</div>
+
+<style>
+    h2 { margin: 0; text-align: center; }
+
+    .card {
+        max-width: 700px;
+        margin: 1.5rem auto;
+        padding: 1rem;
+        border: 1px solid #efefef;
+        border-radius: 12px;
+    }
+
+    .list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;  
+    }
+
+    .btn {
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #c7c7c7;
+        background: #ffffff;
+        cursor: pointer;
+    }
+
+    .list .btn {
+        font-size: 1rem;
+        line-height: 1.3;
+        text-align: left;
+    }
+
+    .options {
+        padding-top: 0.4rem;
+        text-align: center;
+    }
+  .btn:hover { filter: brightness(0.9); }
+  .save { background: #a9f6b4;}
+  .box {background: #eeeeee;}
+
+  .status {
+    text-align: center; 
+  }
+</style>

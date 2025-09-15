@@ -6,7 +6,8 @@ public class VoteOption {
     private int presentationOrder;
     private long id;
     private long pollId;
-    
+    private int votes;
+
     public VoteOption(){}
     
     public String getCaption() {
@@ -32,6 +33,14 @@ public class VoteOption {
     }
     public void setPollId(long pollId) {
         this.pollId = pollId;
+    }
+
+        public int getVotes() {
+        return votes;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 
 }

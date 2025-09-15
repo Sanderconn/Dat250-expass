@@ -3,6 +3,7 @@ package dat250.pollApp;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.stereotype.Component;
@@ -50,6 +51,7 @@ public class PollManager {
         for (VoteOption opt : poll.getVoteOptions()) {
             opt.setId(voteOptionSeq.getAndIncrement());
             opt.setPollId(poll.getId());
+            opt.setVotes(0);
         }
         polls.put(poll.getId(), poll);
         return poll;
@@ -72,6 +74,13 @@ public class PollManager {
     public Vote addVote(Vote vote) {
         vote.setId(voteSeq.getAndIncrement());
         votes.put(vote.getId(), vote);
+        Poll poll = polls.get(vote.getPollId());
+        for (VoteOption opt : poll.getVoteOptions()) {
+            if (opt.getId() == vote.getOptionId()) {
+                opt.setVotes(opt.getVotes() + 1); // assuming votes was initialized to 0
+                break;
+        }
+    }
         return vote;
     }
 
