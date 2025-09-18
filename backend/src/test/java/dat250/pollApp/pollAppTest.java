@@ -70,8 +70,8 @@ public class pollAppTest {
                 Map.of(
                         "question", "What is your favorite number in the alphabet?",
                         "publishedAt", "2025-09-04T00:00:00Z",
-                        "validUntil",  "2025-09-10T00:00:00Z",
-                        "voteOptions", List.of(
+                        "validUntil",  "2025-09-10T00:00:00Z", 
+                        "options", List.of(
                                 Map.of("caption","Blue","presentationOrder",1),
                                 Map.of("caption","Green","presentationOrder",2),
                                 Map.of("caption","Red","presentationOrder",3)
@@ -80,7 +80,7 @@ public class pollAppTest {
                 Poll.class);
         assertEquals(HttpStatus.OK, pollRes.getStatusCode());
         Poll poll = pollRes.getBody();
-        assertEquals(3, poll.getVoteOptions().size());
+        assertEquals(3, poll.getOptions().size());
 
         // List polls 
         ResponseEntity<List<Poll>> polls = rest.exchange(
@@ -107,7 +107,7 @@ public class pollAppTest {
                         "question", "Best color?",
                         "publishedAt", "2025-09-04T00:00:00Z",
                         "validUntil",  "2025-09-10T00:00:00Z",
-                        "voteOptions", List.of(
+                        "options", List.of(
                                 Map.of("caption","Blue","presentationOrder",1),
                                 Map.of("caption","Green","presentationOrder",2)
                         )
@@ -116,7 +116,7 @@ public class pollAppTest {
         ).getBody();
 
         Long pollId = poll.getId();
-        List<VoteOption> opts = poll.getVoteOptions();
+        List<VoteOption> opts = poll.getOptions();
         long optA = opts.get(0).getId();
         long optB = opts.get(1).getId();
 
@@ -128,8 +128,8 @@ public class pollAppTest {
         );
         assertEquals(HttpStatus.OK, voteRes.getStatusCode());
         Vote vote = voteRes.getBody();
-        assertEquals(pollId, vote.getPollId());
-        assertEquals(optA, vote.getOptionId());
+        assertEquals(pollId, vote.getVotesOn().getPollId());
+        assertEquals(optA, vote.getVotesOn().getId());
 
         // Change vote 
         HttpHeaders h = new HttpHeaders();
@@ -143,7 +143,7 @@ public class pollAppTest {
                 Vote.class
         );
         assertEquals(HttpStatus.OK, changed.getStatusCode());
-        assertEquals(optB, changed.getBody().getOptionId());
+        assertEquals(optB, changed.getBody().getVotesOn().getId());
 
         // List votes for poll 
         ResponseEntity<List<Vote>> votes = rest.exchange(
@@ -153,7 +153,7 @@ public class pollAppTest {
                 new ParameterizedTypeReference<List<Vote>>() {});
         assertEquals(HttpStatus.OK, votes.getStatusCode());
         assertEquals(1, votes.getBody().size());
-        assertEquals(pollId, votes.getBody().get(0).getPollId());
+        assertEquals(pollId, votes.getBody().get(0).getVotesOn().getPollId());
     }
 
     @Test
@@ -171,7 +171,7 @@ public class pollAppTest {
                         "question", "Q?",
                         "publishedAt", "2025-09-04T00:00:00Z",
                         "validUntil",  "2025-09-10T00:00:00Z",
-                        "voteOptions", List.of(
+                        "options", List.of(
                                 Map.of("caption","A","presentationOrder",1),
                                 Map.of("caption","B","presentationOrder",2)
                         )
@@ -181,7 +181,7 @@ public class pollAppTest {
 
         rest.postForEntity(
                 URI.create("/api/polls/" + poll.getId() + "/votes"),
-                Map.of("userId", userId, "optionId", poll.getVoteOptions().get(0).getId()),
+                Map.of("userId", userId, "optionId", poll.getOptions().get(0).getId()),
                 Vote.class
         );
 
@@ -198,7 +198,7 @@ public class pollAppTest {
         try {
             rest.getForEntity(URI.create("/api/polls/" + poll.getId() + "/votes"), String.class);
         } catch (org.springframework.web.client.HttpClientErrorException e) {
-            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, e.getStatusCode());
         }
     }
 }

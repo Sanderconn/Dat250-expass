@@ -1,7 +1,6 @@
 package dat250.pollApp.controllers;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dat250.pollApp.PollManager;
 import dat250.pollApp.domain.Poll;
-import dat250.pollApp.domain.VoteOption;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -28,23 +26,9 @@ public class PollController {
         this.pm = pm;
     }
 
-    // DTO for creating a poll
-    static class CreatePollBody {
-        public String question;
-        public java.time.Instant publishedAt;
-        public java.time.Instant validUntil;
-        public List<VoteOption> voteOptions;
-    }
-
     // Create poll
     @PostMapping
-    public ResponseEntity<Poll> create(@RequestBody CreatePollBody body) {
-        Poll poll = new Poll();
-        poll.setQuestion(body.question);
-        poll.setPublishedAt(body.publishedAt);
-        poll.setValidUntil(body.validUntil);
-        poll.setVoteOptions(body.voteOptions);
-
+    public ResponseEntity<Poll> create(@RequestBody Poll poll) {
         Poll saved = pm.addPoll(poll);
         return ResponseEntity.ok(saved);
     }

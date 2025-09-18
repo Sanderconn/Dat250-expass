@@ -47,9 +47,9 @@ public class PollManager {
     // polls
     public Poll addPoll(Poll poll) {
         poll.setId(pollSeq.getAndIncrement());
-        for (VoteOption opt : poll.getVoteOptions()) {
+        for (VoteOption opt : poll.getOptions()) {
             opt.setId(voteOptionSeq.getAndIncrement());
-            opt.setPollId(poll.getId());
+            opt.setPoll(poll);
             opt.setVotes(0);
         }
         polls.put(poll.getId(), poll);
@@ -66,20 +66,24 @@ public class PollManager {
 
     public void removePoll(Long id) {
         polls.remove(id);
-        votes.values().removeIf(v -> v.getPollId().equals(id));
+        votes.values().removeIf(v -> v.getVotesOn().getPoll().getId().equals(id));
+    }
+
+    public VoteOption getVoteOption(Long optionId) {
+        for (Poll p : polls.values()) {
+            for (VoteOption o : p.getOptions()) {
+                if (o.getId() == optionId) return o;
+            }
+        }
+        return null; 
     }
 
     // votes
     public Vote addVote(Vote vote) {
         vote.setId(voteSeq.getAndIncrement());
         votes.put(vote.getId(), vote);
-        Poll poll = polls.get(vote.getPollId());
-        for (VoteOption opt : poll.getVoteOptions()) {
-            if (opt.getId() == vote.getOptionId()) {
-                opt.setVotes(opt.getVotes() + 1); 
-                break;
-        }
-    }
+        VoteOption option = vote.getVotesOn();
+        option.setVotes(option.getVotes() + 1);
         return vote;
     }
 

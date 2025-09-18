@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dat250.pollApp.PollManager;
 import dat250.pollApp.domain.Poll;
+import dat250.pollApp.domain.User;
 import dat250.pollApp.domain.Vote;
 import dat250.pollApp.domain.VoteOption;
 
@@ -36,8 +37,8 @@ public class VoteController {
         Poll poll = pm.getPoll(pollId);
         List<Vote> out = new ArrayList<>();
         for (Vote v : pm.getAllVotes()) {
-            for (VoteOption o : poll.getVoteOptions()) {
-                if (o.getId() == v.getOptionId()) { out.add(v); break; }
+            if (v.getVotesOn().getPoll().getId() == poll.getId()) {
+                out.add(v);
             }
         }
         return ResponseEntity.ok(out);
@@ -45,10 +46,11 @@ public class VoteController {
 
     @PostMapping
     public ResponseEntity<Vote> create(@PathVariable long pollId, @RequestBody CreateVoteBody body) {
+        User user = pm.getUser(body.userId);
+        VoteOption option = pm.getVoteOption(body.optionId);
         Vote v = new Vote();
-        v.setUserId(body.userId);  
-        v.setOptionId(body.optionId);
-        v.setPollId(pollId);
+        v.setVoter(user);
+        v.setVotesOn(option);
         v.setPublishedAt(Instant.now());
 
         Vote saved = pm.addVote(v);
@@ -57,10 +59,10 @@ public class VoteController {
 
     @PutMapping("/{voteId}")
     public ResponseEntity<Vote> update(@PathVariable long pollId, @PathVariable long voteId, @RequestBody UpdateVoteBody body) {
-        Vote vote = pm.getVote(voteId);
-        vote.setOptionId(body.newOptionId);
-        vote.setPollId(pollId);
-        vote.setPublishedAt(Instant.now());
-        return ResponseEntity.ok(vote);
+        Vote v = pm.getVote(voteId);
+        VoteOption newOption = pm.getVoteOption(body.newOptionId);
+        v.setVotesOn(newOption);
+        v.setPublishedAt(Instant.now());
+        return ResponseEntity.ok(v);
     }
 }

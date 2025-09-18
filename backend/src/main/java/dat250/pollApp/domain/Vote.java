@@ -2,13 +2,31 @@ package dat250.pollApp.domain;
 
 import java.time.Instant;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "votes")
 public class Vote {
     
     private Instant publishedAt;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "voter_id")
+    private User voter;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "option_id")
+    private VoteOption votesOn;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; 
-    private Long userId; 
-    private Long optionId;
-    private Long pollId;
 
     public Vote(){}
 
@@ -24,22 +42,16 @@ public class Vote {
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getUserId() {
-        return userId;
+    public User getVoter() {
+        return voter;
     }
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setVoter(User voter) {
+        this.voter = voter;
     }
-    public Long getOptionId() {
-        return optionId;
+    public VoteOption getVotesOn() {
+        return votesOn;
     }
-    public void setOptionId(Long optionId) {
-        this.optionId = optionId;
-    }
-    public Long getPollId() {
-        return pollId;
-    }
-    public void setPollId(Long pollId) {
-        this.pollId = pollId;
+    public void setVotesOn(VoteOption votesOn) {
+        this.votesOn = votesOn;
     }
 }
