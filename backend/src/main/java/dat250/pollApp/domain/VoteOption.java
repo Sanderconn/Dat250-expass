@@ -30,7 +30,7 @@ public class VoteOption {
     private Poll poll;
 
     @Transient
-    private Long pollIdShadow;  // used only for JSON readback
+    private Long pollIdShadow; 
 
     @JsonProperty("pollId")
     public Long getPollId() {
