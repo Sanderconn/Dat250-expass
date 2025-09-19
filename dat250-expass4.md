@@ -12,7 +12,7 @@ I used the same Spring Boot integration tests as in Experiment 2, but they had t
 After these changes, all the tests run successfully.
 
 ### Database inspection
-To check what tables were created, I used the H2 in-memory database at 'http://localhost:8080/h2-console' after running './gradlew botrun'. After connecting to it I could run queries like `SHOW TABLES;` and `SHOW COLUMNS FROM POLLS;` to confirm that Hibernate generated the right tables:
+To check what tables were created, I used the H2 in-memory database at http://localhost:8080/h2-console after running `./gradlew bootrun`. After connecting to it I could run queries like `SHOW TABLES;` and `SHOW COLUMNS FROM POLLS;` to confirm that Hibernate generated the right tables:
 - `USERS`
 - `POLLS`
 - `VOTE_OPTIONS`
