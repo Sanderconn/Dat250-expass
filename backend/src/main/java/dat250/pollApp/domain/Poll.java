@@ -32,7 +32,7 @@ public class Poll {
     @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("presentationOrder ASC")
     @JsonManagedReference("poll-options")
-    private List<VoteOption> options = new ArrayList<>();
+    private List<VoteOption> voteOptions = new ArrayList<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,10 +59,10 @@ public class Poll {
         this.validUntil = validUntil;
     }
     public List<VoteOption> getOptions() {
-        return options;
+        return voteOptions;
     }
-    public void setOptions(List<VoteOption> options) {
-        this.options = options;
+    public void setOptions(List<VoteOption> voteOptions) {
+        this.voteOptions = voteOptions;
     }
     public Long getId() {
         return id;
@@ -89,9 +89,9 @@ public class Poll {
     public VoteOption addVoteOption(String caption) {
         VoteOption newOption = new VoteOption();
         newOption.setCaption(caption);
-        newOption.setPresentationOrder(options.size());
+        newOption.setPresentationOrder(voteOptions.size());
         newOption.setPoll(this);
-        this.options.add(newOption);
+        this.voteOptions.add(newOption);
         return newOption;
     }
 }

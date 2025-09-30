@@ -12,7 +12,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-// TODO: you may have to adjust the imports to import the domain model entities
 import dat250.pollApp.domain.Poll;
 import dat250.pollApp.domain.User;
 import dat250.pollApp.domain.VoteOption;
@@ -87,7 +86,7 @@ public class PollsTest {
     @Test
     public void testOptions() {
         emf.runInTransaction(em -> {
-            List<String> poll2Options = em.createQuery("select o.caption from Poll p join p.options o join p.createdBy u where u.email = :mail order by o.presentationOrder", String.class).setParameter("mail", "eve@mail.org").getResultList();
+            List<String> poll2Options = em.createQuery("select o.caption from Poll p join p.voteOptions o join p.createdBy u where u.email = :mail order by o.presentationOrder", String.class).setParameter("mail", "eve@mail.org").getResultList();
             List<String> expected = Arrays.asList("Yes! Yammy!", "Mamma mia: Nooooo!");
             assertEquals(expected, poll2Options);
         });
