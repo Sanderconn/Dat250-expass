@@ -10,6 +10,20 @@
 
   onMount(loadPolls);
 
+  async function applyCounts(pollId) {
+  const r = await fetch(`/api/polls/${pollId}/results`);
+  if (!r.ok) return;
+  const counts = await r.json();
+
+  const p = polls.find(p => p.id === pollId);
+  if (!p || !p.voteOptions) return;
+
+  for (const opt of p.voteOptions) {
+    opt.votes = Number(counts[opt.id] ?? 0);
+  }
+  polls = [...polls];
+}
+
   async function loadPolls() {
     status = 'Loading…';
     try {
@@ -25,6 +39,7 @@
     selectedPollId = id;
     phase = 'vote';
     status = '';
+    applyCounts(id);
   }
 
   async function submitVote(optionId) {
@@ -38,9 +53,10 @@
       });
       if (!res.ok) throw new Error();
       const id = selectedPollId;
-      await loadPolls();
+      //await loadPolls();
       selectedPollId = id;
 
+      await applyCounts(selectedPollId);
       status = 'Vote recorded';
     } catch {
       status = 'Failed to submit vote';
