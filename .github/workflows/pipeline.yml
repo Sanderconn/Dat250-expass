@@ -9,6 +9,19 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+    env:
+      SPRING_REDIS_HOST: localhost
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_DATABASE: 15
     defaults:
       run:
         working-directory: backend
@@ -30,4 +43,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build & test
-        run: ./gradlew clean test --no-daemon --stacktrace
+        env:
+          SPRING_CACHE_TYPE: none
+          SPRING_AUTOCONFIGURE_EXCLUDE: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+        run: ./gradlew clean test --no-daemon --stacktrace -i
