@@ -43,7 +43,4 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build & test
-        env:
-          SPRING_CACHE_TYPE: none
-          SPRING_AUTOCONFIGURE_EXCLUDE: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
         run: ./gradlew clean test --no-daemon --stacktrace -i
