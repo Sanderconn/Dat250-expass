@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import dat250.pollApp.PollManager;
 import dat250.pollApp.cache.RedisCache;
@@ -32,7 +33,7 @@ public class VoteController {
     private final RedisCache cache = new RedisCache();
     private final VoteEventPublisher publisher;
 
-    public VoteController(PollManager pm, VoteEventPublisher publisher) { 
+    public VoteController(PollManager pm, @Autowired(required = false) VoteEventPublisher publisher) { 
         this.pm = pm; 
         this.publisher = publisher;
     }
@@ -63,7 +64,9 @@ public class VoteController {
 
         Vote saved = pm.addVote(v);
         cache.increment(pollId, body.optionId, 1);
-        publisher.publish(pollId, saved.getVotesOn().getId(), (saved.getVoter() != null) ? saved.getVoter().getId() : null);
+        if (publisher != null) {
+            publisher.publish(pollId, saved.getVotesOn().getId(), (saved.getVoter() != null) ? saved.getVoter().getId() : null);
+        }
         return ResponseEntity.ok(saved);
     }
 

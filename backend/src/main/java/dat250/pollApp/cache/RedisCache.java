@@ -20,11 +20,15 @@ public class RedisCache {
         for (var e : counts.entrySet()){
             jedis.hset(k, String.valueOf(e.getKey()), String.valueOf(e.getValue()));
         }
-        jedis.expire(k, 120);
+        jedis.expire(k, 60);
     }
 
     public void increment(long pollId, long voteOptionId, long change){
         jedis.hincrBy(key(pollId), String.valueOf(voteOptionId), change);
         jedis.expire(key(pollId), 120);
+    }
+
+    public void deleteCounts(long pollId) {
+        jedis.del(key(pollId));
     }
 }

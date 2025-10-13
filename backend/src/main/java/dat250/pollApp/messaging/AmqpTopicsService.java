@@ -5,11 +5,13 @@ import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import static dat250.pollApp.config.AmqpConfig.VOTE_RK;
 
 @Service
+@Profile("!test")
 public class AmqpTopicsService {
     private final AmqpAdmin admin;
     private final Queue voteQueue;

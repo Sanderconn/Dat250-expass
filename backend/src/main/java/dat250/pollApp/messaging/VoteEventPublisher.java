@@ -1,11 +1,13 @@
 package dat250.pollApp.messaging;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import static dat250.pollApp.config.AmqpConfig.VOTE_RK;
 
 @Service
+@Profile("!test")
 public class VoteEventPublisher {
     private final RabbitTemplate rabbit;
     private final AmqpTopicsService topics;

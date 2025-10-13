@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dat250.pollApp.domain.Poll;
@@ -17,7 +18,7 @@ import dat250.pollApp.messaging.AmqpTopicsService;
 public class PollManager {
 
     private final AmqpTopicsService topics;
-    public PollManager(AmqpTopicsService topics) {this.topics = topics;}
+    public PollManager(@Autowired(required = false) AmqpTopicsService topics) {this.topics = topics;}
 
     private final Map<Long, User> users = new HashMap<>();
     private final Map<Long, Poll> polls = new HashMap<>();
@@ -57,7 +58,10 @@ public class PollManager {
             opt.setVotes(0);
         }
         polls.put(poll.getId(), poll);
-        topics.registerPoll(poll.getId());
+        if (topics != null) {
+            topics.registerPoll(poll.getId()); 
+        }
+        new dat250.pollApp.cache.RedisCache().deleteCounts(poll.getId());
         return poll;
     }
 
@@ -72,6 +76,7 @@ public class PollManager {
     public void removePoll(Long id) {
         polls.remove(id);
         votes.values().removeIf(v -> v.getVotesOn().getPoll().getId().equals(id));
+        new dat250.pollApp.cache.RedisCache().deleteCounts(id);
     }
 
     public VoteOption getVoteOption(Long optionId) {

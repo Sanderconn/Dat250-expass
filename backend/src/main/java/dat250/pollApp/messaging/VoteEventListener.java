@@ -1,12 +1,14 @@
 package dat250.pollApp.messaging;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import dat250.pollApp.PollManager;
 import dat250.pollApp.domain.Vote;
 import dat250.pollApp.domain.VoteOption;
 
 @Component
+@Profile("!test")
 public class VoteEventListener {
     private final PollManager pm;
 
