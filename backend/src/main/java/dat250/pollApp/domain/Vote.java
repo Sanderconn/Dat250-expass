@@ -16,7 +16,7 @@ public class Vote {
     
     private Instant publishedAt;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JoinColumn(name = "voter_id")
     private User voter;
 

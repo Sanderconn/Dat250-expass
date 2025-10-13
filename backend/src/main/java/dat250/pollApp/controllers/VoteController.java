@@ -21,6 +21,7 @@ import dat250.pollApp.domain.Poll;
 import dat250.pollApp.domain.User;
 import dat250.pollApp.domain.Vote;
 import dat250.pollApp.domain.VoteOption;
+import dat250.pollApp.messaging.VoteEventPublisher;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -29,8 +30,12 @@ public class VoteController {
 
     private final PollManager pm;
     private final RedisCache cache = new RedisCache();
+    private final VoteEventPublisher publisher;
 
-    public VoteController(PollManager pm) { this.pm = pm; }
+    public VoteController(PollManager pm, VoteEventPublisher publisher) { 
+        this.pm = pm; 
+        this.publisher = publisher;
+    }
 
     static class CreateVoteBody { public Long userId; public Long optionId;}
     static class UpdateVoteBody { public Long newOptionId; }
@@ -49,7 +54,7 @@ public class VoteController {
 
     @PostMapping
     public ResponseEntity<Vote> create(@PathVariable long pollId, @RequestBody CreateVoteBody body) {
-        User user = pm.getUser(body.userId);
+        User user = (body.userId != null) ? pm.getUser(body.userId) : null;
         VoteOption option = pm.getVoteOption(body.optionId);
         Vote v = new Vote();
         v.setVoter(user);
@@ -58,6 +63,7 @@ public class VoteController {
 
         Vote saved = pm.addVote(v);
         cache.increment(pollId, body.optionId, 1);
+        publisher.publish(pollId, saved.getVotesOn().getId(), (saved.getVoter() != null) ? saved.getVoter().getId() : null);
         return ResponseEntity.ok(saved);
     }
 

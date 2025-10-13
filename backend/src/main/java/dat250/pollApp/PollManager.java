@@ -11,9 +11,13 @@ import dat250.pollApp.domain.Poll;
 import dat250.pollApp.domain.User;
 import dat250.pollApp.domain.Vote;
 import dat250.pollApp.domain.VoteOption;
+import dat250.pollApp.messaging.AmqpTopicsService;
 
 @Component
 public class PollManager {
+
+    private final AmqpTopicsService topics;
+    public PollManager(AmqpTopicsService topics) {this.topics = topics;}
 
     private final Map<Long, User> users = new HashMap<>();
     private final Map<Long, Poll> polls = new HashMap<>();
@@ -53,6 +57,7 @@ public class PollManager {
             opt.setVotes(0);
         }
         polls.put(poll.getId(), poll);
+        topics.registerPoll(poll.getId());
         return poll;
     }
 
