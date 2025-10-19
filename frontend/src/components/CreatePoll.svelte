@@ -64,9 +64,7 @@
         border: 1px solid #efefef;
         border-radius: 12px;
     }
-
-
-
+    
   .field { margin: 0.5rem 0; }
 
   .input {

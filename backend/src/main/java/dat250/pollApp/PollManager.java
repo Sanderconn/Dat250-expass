@@ -94,4 +94,22 @@ public class PollManager {
     public void removeVote(Long id) {
         votes.remove(id);
     }
+
+    public User findUserByUsername(String username) {
+    for (User u : users.values()) {
+        if (u.getUsername().equalsIgnoreCase(username)) {
+            return u;
+        }
+    }
+    return null;
+    }
+
+    public User findUserByEmail(String email) {
+    for (User u : users.values()) {
+        if (u.getEmail().equalsIgnoreCase(email)) {
+            return u;
+        }
+    }
+    return null;
+    }
 }

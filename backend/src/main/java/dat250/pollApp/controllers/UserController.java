@@ -1,6 +1,8 @@
 package dat250.pollApp.controllers;
 
 import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -35,5 +37,13 @@ public class UserController {
     @GetMapping
     public Collection<User> list() {
         return pm.getAllUsers();
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<User> login(@RequestBody Map<String, String> body) {
+        User user = pm.findUserByUsername(body.get("username"));
+        if (user == null) user = pm.findUserByEmail(body.get("email"));
+        //if (user == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(user);
     }
 }

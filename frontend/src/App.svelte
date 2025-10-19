@@ -3,7 +3,16 @@
   import Vote from './components/Vote.svelte';
   import Login from './components/Login.svelte';
   import CreateUser from './components/CreateUser.svelte';
-  let tab = 'create';
+
+  let tab = 'login';
+  let currentUser = null;
+
+  function onLoggedIn(user) { currentUser = user; tab = 'create'; }
+  function onGuest(user)    { currentUser = user; tab = 'create'; }
+  function gotoCreateUser() { tab = 'createUser'; }
+  function onUserCreated(u) { currentUser = u; tab = 'create'; }
+  function onCancelCreate() { tab = 'login'; }
+  function logout()         { currentUser = null; tab = 'login'; }
 </script>
 
 <div class="app">
@@ -18,40 +27,32 @@
       </button>
     </div>
     <div class="toolbar">
-      <button class="btn tab" on:click={() => (tab = 'login')}>
-        Log out
-      </button>
+      <span style="align-self:center">
+        {#if currentUser.guest}
+        Hi, Guest!
+        {:else}
+        Hi, {currentUser.username}
+        {/if}
+      </span>
+      <button class="btn tab" on:click={logout}>Log out</button>
     </div>
   {/if}
 
   {#if tab === 'login'}
-    <div class="toolbar">
-      <button class="btn tab" on:click={() => (tab = 'create')}>
-        Continue as guest
-      </button>
-      <button class="btn tab" on:click={() => (tab = 'createUser')}>
-        Create user
-      </button>
-      <button class="btn tab" on:click={() => (tab = 'create')}>
-        Login
-      </button>
-    </div>
+    <Login
+      onSuccess={onLoggedIn}
+      onGuest={onGuest}
+      onGotoCreateUser={gotoCreateUser}
+    />
   {/if}
 
   {#if tab === 'createUser'}
-    <div class="toolbar">
-      <button class="btn tab" on:click={() => (tab = 'login')}>
-        Back to login
-      </button>
-      <button class="btn tab" on:click={() => (tab = 'create')}>
-        Log in
-      </button>
-    </div>
+    <CreateUser
+      onCreated={onUserCreated}
+      onCancel={onCancelCreate}
+    />
   {/if}
 
-
-  {#if tab === 'login'}   <Login /> {/if}
-  {#if tab === 'createUser'}   <CreateUser /> {/if}
   {#if tab === 'create'} <CreatePoll /> {/if}
   {#if tab === 'vote'}   <Vote /> {/if}
 </div>
