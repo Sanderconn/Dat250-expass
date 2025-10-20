@@ -5,7 +5,7 @@ FROM gradle:8.14.3-alpine AS builder
 WORKDIR /home/gradle
 
 # copy only necessary source code files
-COPY settings.gradle.kts build.gradle.kts .
+COPY settings.gradle.kts build.gradle.kts ./
 # Copying a folder recursively needs special attention
 COPY src src
 COPY gradle gradle
